@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { getFirebaseAuth } from '@/lib/firebase';
 import Link from 'next/link';
-import { LayoutDashboard, Stethoscope, History, LogOut, Menu, X, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Stethoscope, History, LogOut, Menu, X, ShieldAlert, MessageSquareWarning } from 'lucide-react';
 
 export default function Navbar({ user }) {
   const pathname = usePathname();
@@ -23,6 +23,7 @@ export default function Navbar({ user }) {
     { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
     { href: '/check', label: 'Pemeriksaan', icon: <Stethoscope size={18} /> },
     { href: '/history', label: 'Riwayat', icon: <History size={18} /> },
+    { href: '/pengaduan', label: 'Pengaduan', icon: <MessageSquareWarning size={18} color="var(--health-orange)" /> },
   ];
 
   if (isAdmin) {

@@ -641,9 +641,236 @@ a:hover { color: var(--accent-secondary); }
 .empty-state .empty-icon { font-size: 3rem; margin-bottom: 16px; }
 .empty-state h3 { color: var(--text-secondary); margin-bottom: 8px; }
 
+/* ===== PENGADUAN / COMPLAINT ===== */
+.complaint-page { padding: 40px 0 80px; }
+.complaint-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.complaint-form textarea.form-input {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.urgency-selector {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.urgency-option {
+  flex: 1;
+  min-width: 100px;
+}
+.urgency-option input[type="radio"] {
+  display: none;
+}
+.urgency-option label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-glass);
+  background: var(--bg-glass);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.urgency-option label:hover {
+  border-color: var(--text-muted);
+  background: rgba(255,255,255,0.08);
+}
+.urgency-option label .urgency-icon {
+  font-size: 1.5rem;
+}
+.urgency-option input[type="radio"]:checked + label.urgency-ringan {
+  border-color: var(--health-green);
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--health-green);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+}
+.urgency-option input[type="radio"]:checked + label.urgency-sedang {
+  border-color: var(--health-yellow);
+  background: rgba(234, 179, 8, 0.12);
+  color: var(--health-yellow);
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.15);
+}
+.urgency-option input[type="radio"]:checked + label.urgency-darurat {
+  border-color: var(--health-red);
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--health-red);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+  animation: pulseUrgent 2s ease-in-out infinite;
+}
+
+@keyframes pulseUrgent {
+  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.15); }
+  50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
+}
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+  font-weight: 700;
+  gap: 10px;
+}
+.btn-whatsapp:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+}
+
+.complaint-success {
+  text-align: center;
+  padding: 40px 28px;
+}
+.complaint-success .success-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 2px solid var(--health-green);
+  animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes scaleIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.complaint-success h3 { font-size: 1.3rem; margin-bottom: 8px; }
+.complaint-success p { color: var(--text-secondary); margin-bottom: 24px; }
+
+.complaint-card {
+  padding: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.complaint-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+}
+.complaint-card.urgent-ringan::before { background: var(--health-green); }
+.complaint-card.urgent-sedang::before { background: var(--health-yellow); }
+.complaint-card.urgent-darurat::before { background: var(--health-red); }
+
+.complaint-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.urgency-badge {
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.urgency-badge.ringan { background: rgba(34,197,94,0.15); color: var(--health-green); border: 1px solid rgba(34,197,94,0.3); }
+.urgency-badge.sedang { background: rgba(234,179,8,0.15); color: var(--health-yellow); border: 1px solid rgba(234,179,8,0.3); }
+.urgency-badge.darurat { background: rgba(239,68,68,0.15); color: var(--health-red); border: 1px solid rgba(239,68,68,0.3); }
+
+.status-badge {
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.status-badge.menunggu { background: rgba(234,179,8,0.15); color: var(--health-yellow); border: 1px solid rgba(234,179,8,0.3); }
+.status-badge.ditangani { background: rgba(59,130,246,0.15); color: var(--health-blue); border: 1px solid rgba(59,130,246,0.3); }
+.status-badge.selesai { background: rgba(34,197,94,0.15); color: var(--health-green); border: 1px solid rgba(34,197,94,0.3); }
+
+/* Admin Tabs */
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin-bottom: 28px;
+}
+.admin-tab {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.admin-tab:hover { color: var(--text-secondary); background: rgba(255,255,255,0.05); }
+.admin-tab.active {
+  background: var(--gradient-primary);
+  color: #fff;
+  box-shadow: 0 2px 12px var(--accent-glow);
+}
+
+.admin-tab-badge {
+  background: rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.complaint-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.complaint-actions button {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+.phone-input-wrap {
+  position: relative;
+}
+.phone-prefix {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .check-grid { grid-template-columns: 1fr; }
+  .complaint-grid { grid-template-columns: 1fr; }
   .navbar-links { display: none; }
   .navbar-menu-btn { display: block; }
   .navbar-links.open {

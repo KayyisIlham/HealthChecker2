@@ -8,7 +8,8 @@ import {
   Sparkles, 
   History as HistoryIcon, 
   ShieldCheck, 
-  Smartphone 
+  Smartphone,
+  MessageSquareWarning 
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -95,6 +96,13 @@ export default function HomePage() {
             </div>
             <h3>Aman & Privat</h3>
             <p>Data Anda tersimpan aman di Firebase dengan autentikasi Google dan enkripsi tingkat lanjut.</p>
+          </div>
+          <div className="feature-card glass-card">
+            <div className="feature-icon">
+              <MessageSquareWarning color="var(--health-orange)" />
+            </div>
+            <h3>Pengaduan Kesehatan</h3>
+            <p>Laporkan keluhan kesehatan dan kirim langsung ke WhatsApp tim kesehatan untuk penanganan cepat.</p>
           </div>
           <div className="feature-card glass-card">
             <div className="feature-icon">
