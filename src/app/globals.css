@@ -170,6 +170,10 @@ a:hover { color: var(--accent-secondary); }
   font-size: 1rem;
   transition: var(--transition);
 }
+.form-input option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
 .form-input:focus {
   outline: none;
   border-color: var(--accent-primary);
