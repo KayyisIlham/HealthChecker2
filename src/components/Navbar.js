@@ -19,15 +19,20 @@ export default function Navbar({ user }) {
     window.location.href = '/';
   };
 
-  const links = [
-    { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
-    { href: '/check', label: 'Pemeriksaan', icon: <Stethoscope size={18} /> },
-    { href: '/history', label: 'Riwayat', icon: <History size={18} /> },
-    { href: '/pengaduan', label: 'Pengaduan', icon: <MessageSquareWarning size={18} color="var(--health-orange)" /> },
-  ];
+  let links = [];
 
   if (isAdmin) {
-    links.push({ href: '/admin', label: 'Admin', icon: <ShieldAlert size={18} color="var(--health-red)" /> });
+    links = [
+      { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+      { href: '/admin', label: 'Admin Panel', icon: <ShieldAlert size={18} color="var(--health-red)" /> },
+    ];
+  } else {
+    links = [
+      { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+      { href: '/check', label: 'Pemeriksaan', icon: <Stethoscope size={18} /> },
+      { href: '/history', label: 'Riwayat', icon: <History size={18} /> },
+      { href: '/pengaduan', label: 'Pengaduan', icon: <MessageSquareWarning size={18} color="var(--health-orange)" /> },
+    ];
   }
 
   return (
