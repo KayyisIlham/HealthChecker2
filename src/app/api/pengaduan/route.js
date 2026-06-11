@@ -57,11 +57,13 @@ export async function GET(request) {
     const snapshot = await adminDb
       .collection('complaints')
       .where('userId', '==', userId)
-      .orderBy('createdAt', 'desc')
-      .limit(20)
+      .limit(50)
       .get();
 
     const complaints = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // Sort by createdAt descending client-side
+    complaints.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     return NextResponse.json({ complaints });
   } catch (error) {
