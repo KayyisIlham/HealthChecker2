@@ -871,6 +871,156 @@ a:hover { color: var(--accent-secondary); }
   pointer-events: none;
 }
 
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+.modal-content {
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeInUp 0.3s ease;
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(99, 102, 241, 0.1);
+}
+.modal-content:hover {
+  transform: none;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-glass);
+}
+.modal-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+}
+.modal-close {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  border-radius: 8px;
+  padding: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--health-red);
+}
+
+/* ===== MEDICINE FORM ===== */
+.medicine-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.medicine-form .form-group {
+  margin-bottom: 16px;
+}
+.medicine-form .form-label {
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+.medicine-form .form-input {
+  padding: 12px 14px;
+  font-size: 0.92rem;
+}
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-glass);
+}
+
+/* ===== EXPIRY DATE BADGES ===== */
+.ed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.ed-expired {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--health-red);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  animation: pulseUrgent 2s ease-in-out infinite;
+}
+.ed-warning {
+  background: rgba(234, 179, 8, 0.15);
+  color: var(--health-yellow);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+.ed-safe {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--health-green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* ===== ROW HIGHLIGHTS ===== */
+.row-expired td {
+  background: rgba(239, 68, 68, 0.04) !important;
+}
+.row-warning td {
+  background: rgba(234, 179, 8, 0.03) !important;
+}
+
+/* ===== DELETE ICON BUTTON ===== */
+.btn-icon-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  background: var(--bg-glass);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+}
+.btn-icon-delete:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--health-red);
+}
+.btn-icon-delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .check-grid { grid-template-columns: 1fr; }
@@ -889,10 +1039,17 @@ a:hover { color: var(--accent-secondary); }
   }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .hero h1 { font-size: 2rem; }
+  .admin-tabs { flex-wrap: wrap; }
+  .admin-tab { font-size: 0.78rem; padding: 10px 12px; }
+  .medicine-form .form-row { grid-template-columns: 1fr; }
+  .modal-content { padding: 20px !important; }
 }
 
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr; }
   .glass-card { padding: 20px; }
   .container { padding: 0 16px; }
+  .admin-tab { font-size: 0.72rem; padding: 8px 8px; gap: 4px; }
+  .admin-tab-badge { padding: 1px 6px; font-size: 0.7rem; }
 }
+
