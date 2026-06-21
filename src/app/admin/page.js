@@ -116,6 +116,55 @@ function AdminContent() {
     l.pemberiObat.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // ===== STOCK TRACKING CALCULATION =====
+  const medicineGroup = {};
+  medicines.forEach(m => {
+    const name = (m.namaObat || '').trim();
+    const dose = (m.dosis || '').trim();
+    const key = `${name.toLowerCase()} | ${dose.toLowerCase()}`;
+    
+    if (!medicineGroup[key]) {
+      medicineGroup[key] = {
+        key,
+        namaObat: name,
+        dosis: dose,
+        sumberList: new Set(),
+        totalMasuk: 0,
+        totalKeluar: 0,
+        sisaStok: 0
+      };
+    }
+    
+    medicineGroup[key].totalMasuk += (m.jumlah || 0);
+    if (m.sumber) {
+      medicineGroup[key].sumberList.add(m.sumber.trim());
+    }
+  });
+
+  medicineLogs.forEach(log => {
+    const logObat = (log.obat || '').trim().toLowerCase();
+    for (const key in medicineGroup) {
+      const group = medicineGroup[key];
+      const matchString = `${group.namaObat} ${group.dosis}`.trim().toLowerCase();
+      if (logObat === matchString || logObat === group.namaObat.toLowerCase()) {
+        group.totalKeluar += (log.jumlah || 0);
+      }
+    }
+  });
+
+  const stockTrackingList = Object.values(medicineGroup).map(group => {
+    group.sisaStok = Math.max(0, group.totalMasuk - group.totalKeluar);
+    group.sumber = Array.from(group.sumberList).join(', ');
+    return group;
+  });
+
+  const filteredStockTracking = stockTrackingList.filter(s =>
+    !searchTerm ||
+    s.namaObat.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.dosis.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.sumber.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   // ===== STATS =====
   const pendingCount = complaints.filter(c => c.status === 'menunggu').length;
   const daruratCount = complaints.filter(c => c.urgency === 'darurat' && c.status !== 'selesai').length;
@@ -309,6 +358,7 @@ function AdminContent() {
     complaints: 'Cari pengaduan...',
     medicines: 'Cari nama obat, sumber, atau dosis...',
     medicineLogs: 'Cari nama pasien, obat, keluhan...',
+    stockTracking: 'Cari nama obat, dosis, atau sumber...',
   };
 
   return (
@@ -360,6 +410,13 @@ function AdminContent() {
           >
             <PackageMinus size={18} /> Obat Keluar
             <span className="admin-tab-badge">{medicineLogs.length}</span>
+          </button>
+          <button 
+            className={`admin-tab ${activeTab === 'stockTracking' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('stockTracking'); setSearchTerm(''); }}
+          >
+            <Pill size={18} /> Sisa Stok
+            <span className="admin-tab-badge">{stockTrackingList.length}</span>
           </button>
         </div>
 
@@ -426,6 +483,26 @@ function AdminContent() {
               <div className="stat-card glass-card">
                 <div className="stat-label">Bulan Ini</div>
                 <div className="stat-value" style={{ color: 'var(--health-blue)' }}>{logsThisMonth.length}</div>
+              </div>
+            </>
+          )}
+          {activeTab === 'stockTracking' && (
+            <>
+              <div className="stat-card glass-card">
+                <div className="stat-label">Total Jenis Obat</div>
+                <div className="stat-value">{stockTrackingList.length}</div>
+              </div>
+              <div className="stat-card glass-card">
+                <div className="stat-label">Obat Habis</div>
+                <div className="stat-value" style={{ color: 'var(--health-red)' }}>
+                  {stockTrackingList.filter(s => s.sisaStok === 0).length}
+                </div>
+              </div>
+              <div className="stat-card glass-card">
+                <div className="stat-label">Stok Minim (≤ 5)</div>
+                <div className="stat-value" style={{ color: 'var(--health-yellow)' }}>
+                  {stockTrackingList.filter(s => s.sisaStok > 0 && s.sisaStok <= 5).length}
+                </div>
               </div>
             </>
           )}
@@ -768,6 +845,76 @@ function AdminContent() {
                           </td>
                         </tr>
                       ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ===== STOCK TRACKING TAB ===== */}
+          {activeTab === 'stockTracking' && (
+            <div>
+              {filteredStockTracking.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)' }}>
+                  <Pill size={40} style={{ marginBottom: '12px', opacity: 0.5 }} />
+                  <p>Tidak ada data tracking stok obat.</p>
+                </div>
+              ) : (
+                <div className="history-table-wrap">
+                  <table className="history-table">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Nama Obat</th>
+                        <th>Dosis</th>
+                        <th>Sumber</th>
+                        <th>Total Masuk</th>
+                        <th>Total Keluar</th>
+                        <th>Sisa Stok</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredStockTracking.map((s, idx) => {
+                        let statusColor = 'var(--health-green)';
+                        let statusText = 'Aman';
+                        let statusBg = 'rgba(34, 197, 94, 0.1)';
+                        
+                        if (s.sisaStok === 0) {
+                          statusColor = 'var(--health-red)';
+                          statusText = 'Habis';
+                          statusBg = 'rgba(239, 68, 68, 0.1)';
+                        } else if (s.sisaStok <= 5) {
+                          statusColor = 'var(--health-yellow)';
+                          statusText = 'Minim';
+                          statusBg = 'rgba(234, 179, 8, 0.1)';
+                        }
+                        
+                        return (
+                          <tr key={s.key}>
+                            <td style={{ fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.85rem' }}>{idx + 1}</td>
+                            <td style={{ fontWeight: 600 }}>{s.namaObat}</td>
+                            <td>{s.dosis}</td>
+                            <td style={{ fontSize: '0.85rem', opacity: 0.8 }}>{s.sumber || '—'}</td>
+                            <td style={{ fontWeight: 500 }}>{s.totalMasuk}</td>
+                            <td style={{ fontWeight: 500, color: 'var(--health-red)' }}>{s.totalKeluar}</td>
+                            <td style={{ fontWeight: 700, color: statusColor, fontSize: '1.05rem' }}>{s.sisaStok}</td>
+                            <td>
+                              <span className="history-badge" style={{ 
+                                background: statusBg, 
+                                color: statusColor,
+                                fontSize: '0.75rem',
+                                fontWeight: '800',
+                                padding: '4px 10px',
+                                border: `1px solid ${statusColor}44`
+                              }}>
+                                {statusText.toUpperCase()}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
