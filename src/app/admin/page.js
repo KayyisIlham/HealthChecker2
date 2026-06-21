@@ -208,13 +208,17 @@ function AdminContent() {
       });
       const data = await res.json();
       if (data.success) {
-        setMedicines(prev => [{
-          id: data.id,
-          ...medicineForm,
-          jumlah: medicineForm.jumlah ? parseInt(medicineForm.jumlah) : 0,
-          createdAt: new Date().toISOString(),
-          createdBy: user.email,
-        }, ...prev]);
+        if (data.updated) {
+          setMedicines(prev => prev.map(m => m.id === data.id ? { ...m, ...data.medicine } : m));
+        } else {
+          setMedicines(prev => [{
+            id: data.id,
+            ...medicineForm,
+            jumlah: medicineForm.jumlah ? parseInt(medicineForm.jumlah) : 0,
+            createdAt: new Date().toISOString(),
+            createdBy: user.email,
+          }, ...prev]);
+        }
         setMedicineForm({
           tanggalMasuk: new Date().toISOString().split('T')[0],
           sumber: '', namaObat: '', dosis: '', jumlah: '', expDate: ''
@@ -923,14 +927,19 @@ function AdminContent() {
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Obat yang Diberikan</label>
-                  <input 
-                    type="text" 
+                  <select 
                     className="form-input" 
-                    placeholder="Contoh: Paracetamol 500mg"
                     value={logForm.obat}
                     onChange={(e) => setLogForm(prev => ({ ...prev, obat: e.target.value }))}
                     required
-                  />
+                  >
+                    <option value="">-- Pilih Obat --</option>
+                    {medicines.map(m => (
+                      <option key={m.id} value={`${m.namaObat} ${m.dosis}`}>
+                        {m.namaObat} {m.dosis} (Stok: {m.jumlah} - {m.sumber})
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Jumlah</label>
