@@ -38,10 +38,12 @@ export async function POST(request) {
 
     const docRef = await adminDb.collection('complaints').add(complaintData);
 
-    // Send email notification asynchronously so it doesn't delay client response
-    sendSickNotification(complaintData).catch(err => {
+    // Send email notification (await to ensure it sends completely before connection closes)
+    try {
+      await sendSickNotification(complaintData);
+    } catch (err) {
       console.error('Failed to send sick notification email:', err);
-    });
+    }
 
     return NextResponse.json({ id: docRef.id, ...complaintData });
   } catch (error) {
